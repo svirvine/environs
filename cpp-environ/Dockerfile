@@ -1,21 +1,14 @@
 FROM ubuntu:16.04
-
 RUN apt-get update
 RUN apt-get -y install build-essential sudo
 RUN apt-get -y install llvm-4.0 clang-4.0 clang-format-4.0 libc++-dev
-
-RUN useradd -gecos ',,,,' sirvine
+RUN useradd --disabled-login -gecos 'Sam Irvine' sirvine
 RUN mkdir -p /home/sirvine/.ssh && chmod 600 /home/sirvine/.ssh && chown sirvine:sirvine /home/sirvine/.ssh
-COPY ../common/sirvine.pub /home/sirvine/.ssh/authorized_keys
-RUN chown sirvine:sirvine /home/sirvine/.ssh/authorized_keys
-COPY ../common/dot_emacs /home/sirvine/.emacs
-RUN chown sirvine:sirvine /home/sirvine/.emacs
-COPY dot_emacs_cpp /home/sirvine/dot_emacs_cpp
-RUN cat /home/sirvine/dot_emacs_cpp >> /home/sirvine/.emacs && rm /home/sirvine/dot_emacs_cpp
-COPY ../common/dot_gitconfig /home/sirvine/.gitconfig
-RUN chown sirvine:sirvine /home/sirvine/.gitconfig
-COPY ../common/dot_tmux.conf /home/sirvine/.tmux.conf
-RUN chown sirvine:sirvine /home/sirvine/.tmux.conf
+RUN sudo -u sirvine git clone git@github.com:svirvine/environs.git /home/sirvine/.environ.git
+RUN sudo -u sirvine ln -s /home/sirvine/.environ.git/common/.gitconfig /home/sirvine/.gitconfig
+RUN sudo -u sirvine ln -s /home/sirvine/.environ.git/common/.emacs_cpp /home/sirvine/.emacs
+RUN sudo -u sirvine ln -s /home/sirvine/.environ.git/common/id_rsa.pub /home/sirvine/.ssh/authorized_keys
+RUN sudo -u sirvine ln -s /home/sirvine/.environ.git/common/.tmux.conf /home/sirvine/.tmux.conf
 
 RUN apt-get -y install libjpeg-dev libncurses-dev libpng-dev libtiff-dev libxpm-dev libgif-dev
 RUN wget http://ftp.gnu.org/gnu/emacs/emacs-25.3.tar.xz
