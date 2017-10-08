@@ -1,0 +1,4 @@
+#!/bin/bash
+echo 0 >/proc/sys/kernel/randomize_va_space
+sudo docker build .
+echo 2 >/proc/sys/kernel/randomize_va_space
